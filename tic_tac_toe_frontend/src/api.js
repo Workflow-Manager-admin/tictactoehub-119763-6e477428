@@ -2,7 +2,7 @@
 // API helpers for interacting with the backend tic_tac_toe service.
 //
 
-const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:3001/api";
+const API_BASE = "https://vscode-internal-25072-beta.beta01.cloud.kavia.ai:3001/api";
 
 // PUBLIC_INTERFACE
 export async function registerUser(username, password) {
