@@ -15,7 +15,21 @@ export async function registerUser(username, password) {
     body: JSON.stringify({ username, password })
   });
   if (!response.ok) {
-    throw new Error((await response.json()).detail || "Registration failed");
+    let msg = "Registration failed";
+    try {
+      const data = await response.json();
+      if (typeof data.detail === "string") {
+        msg = data.detail;
+      } else if (Array.isArray(data.detail)) {
+        // FastAPI validation errors format: [{'loc':..., 'msg':..., ...}]
+        msg = data.detail.map(e => e.msg).join("; ");
+      } else if (typeof data.detail === "object") {
+        msg = JSON.stringify(data.detail);
+      }
+    } catch (e) {
+      // fallback
+    }
+    throw new Error(msg);
   }
   return await response.json();
 }
@@ -31,7 +45,20 @@ export async function loginUser(username, password) {
     body: JSON.stringify({ username, password })
   });
   if (!response.ok) {
-    throw new Error((await response.json()).detail || "Login failed");
+    let msg = "Login failed";
+    try {
+      const data = await response.json();
+      if (typeof data.detail === "string") {
+        msg = data.detail;
+      } else if (Array.isArray(data.detail)) {
+        msg = data.detail.map(e => e.msg).join("; ");
+      } else if (typeof data.detail === "object") {
+        msg = JSON.stringify(data.detail);
+      }
+    } catch (e) {
+      // fallback
+    }
+    throw new Error(msg);
   }
   return await response.json(); // Should return token or user info
 }

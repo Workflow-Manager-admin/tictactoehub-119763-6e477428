@@ -25,7 +25,15 @@ export default function AuthForm({ onLogin }) {
       }
       onLogin({ username, token: result.token || result.access_token || "" });
     } catch (err) {
-      setError(err.message);
+      if (typeof err === "string") {
+        setError(err);
+      } else if (err instanceof Error) {
+        setError(err.message);
+      } else if (err && typeof err === "object") {
+        setError(JSON.stringify(err));
+      } else {
+        setError("Unknown error");
+      }
     }
   }
 
