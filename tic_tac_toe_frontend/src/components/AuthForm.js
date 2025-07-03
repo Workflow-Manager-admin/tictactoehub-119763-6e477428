@@ -5,6 +5,7 @@ import { registerUser, loginUser } from "../api";
 export default function AuthForm({ onLogin }) {
   /** Registration & Login form for authentication. */
   const [isRegister, setIsRegister] = useState(false);
+  const [email, setEmail] = useState(""); // Add email state
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -19,7 +20,8 @@ export default function AuthForm({ onLogin }) {
     try {
       let result;
       if (isRegister) {
-        result = await registerUser(username, password);
+        // Send email, username, password for registration
+        result = await registerUser(username, password, email);
       } else {
         result = await loginUser(username, password);
       }
@@ -57,13 +59,25 @@ export default function AuthForm({ onLogin }) {
         {isRegister ? "Register" : "Login"}
       </h2>
       <form onSubmit={handleSubmit}>
+        {isRegister &&
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            required={isRegister}
+            style={{ width: "100%", padding: "0.5rem", fontSize: 16, marginBottom: 12, borderRadius: 6, border: "1px solid #e0e0e0" }}
+            onChange={e => setEmail(e.target.value)}
+            autoFocus
+          />
+        }
         <input
-          type="text" autoFocus
+          type="text"
           placeholder="Username"
           value={username}
           required
           style={{ width: "100%", padding: "0.5rem", fontSize: 16, marginBottom: 12, borderRadius: 6, border: "1px solid #e0e0e0" }}
           onChange={e => setUsername(e.target.value)}
+          autoFocus={!isRegister}
         />
         <input
           type="password"

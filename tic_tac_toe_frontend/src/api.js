@@ -4,15 +4,24 @@
 
 const API_BASE = "https://vscode-internal-25072-beta.beta01.cloud.kavia.ai:3001/api";
 
-// PUBLIC_INTERFACE
-export async function registerUser(username, password) {
+/**
+ * PUBLIC_INTERFACE
+ * Register a new user via backend API.
+ * @param {string} username 
+ * @param {string} password 
+ * @param {string} [email] 
+ * @returns {Promise<Object>}
+ */
+export async function registerUser(username, password, email) {
   /** Register a new user via backend API. */
+  const body = { username, password };
+  if (email) body.email = email;
   const response = await fetch(`${API_BASE}/users/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ username, password })
+    body: JSON.stringify(body)
   });
   if (!response.ok) {
     let msg = "Registration failed";
